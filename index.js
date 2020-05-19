@@ -68,7 +68,7 @@ bot.on('follow', function (event) {
 bot.on('message', async function (event) {
   // -------------------------------------------------------------------------------------------
   class Leaderboard {
-    constructor() {
+    constructor () {
       this.ary = []
       this.want = [0, 1, 2, 3, 4, 5, 6, 25, 26]
       this.option = {
@@ -83,7 +83,7 @@ bot.on('message', async function (event) {
       }
     }
 
-    async info() {
+    async info () {
       try {
         const response = await rp(this.option)
         for (const i of this.want) {
@@ -119,7 +119,7 @@ bot.on('message', async function (event) {
   }
   // -------------------------------------------------------------------------------------------
   class Search {
-    constructor() {
+    constructor () {
       this.ary = []
       this.option = {
         uri: 'https://api.kkbox.com/v1.1/search',
@@ -136,20 +136,19 @@ bot.on('message', async function (event) {
       }
     }
 
-    async information() {
+    async information () {
       try {
         const response = await rp(this.option)
         for (const i of response.tracks.data) {
-          const youtube = search(i.name + i.album.artist.name, opts)
           this.ary.push(
             {
               thumbnailImageUrl: i.album.images[0].url,
               title: i.name,
               text: i.album.artist.name,
               actions: [{
-                type: 'uri',
+                type: 'postback',
                 label: '立即試聽',
-                uri: (await youtube).results[0].link
+                data: i.name + ',' + i.album.artist.name
               }, {
                 type: 'uri',
                 label: '看看歌詞',
@@ -181,9 +180,9 @@ bot.on('message', async function (event) {
   }
 })
 
-bot.on('postback', (event) => {
+bot.on('postback', async (event) => {
   class LeaderboardTrack {
-    constructor(id) {
+    constructor (id) {
       this.id = id
       this.ary = []
       this.option = {
@@ -199,21 +198,20 @@ bot.on('postback', (event) => {
       }
     }
 
-    async info() {
+    async info () {
       try {
         this.option.uri = 'https://api.kkbox.com/v1.1/charts/' + this.id + '/tracks'
         const response = await rp(this.option)
         for (const i of response.data) {
-          const youtube = search(i.name + i.album.artist.name, opts)
           this.ary.push(
             {
               thumbnailImageUrl: i.album.images[0].url,
               title: i.name,
               text: i.album.artist.name,
               actions: [{
-                type: 'uri',
+                type: 'postback',
                 label: '立即試聽',
-                uri: (await youtube).results[0].link
+                data: i.name + ',' + i.album.artist.name
               }, {
                 type: 'uri',
                 label: '看看歌詞',
@@ -235,8 +233,14 @@ bot.on('postback', (event) => {
       })
     }
   }
-  const getTracks = new LeaderboardTrack(event.postback.data)
-  getTracks.info()
+  const youtubeData = event.postback.data.split(',')
+  if (youtubeData.length === 2) {
+    const youtube = await search(youtubeData[1] + youtubeData[0], opts)
+    event.reply(youtube.results[0].link)
+  } else {
+    const getTracks = new LeaderboardTrack(event.postback.data)
+    getTracks.info()
+  }
 })
 
 // https://www.postman.com/collections/5cd6236e9e9748fd1ed1
