@@ -140,22 +140,27 @@ bot.on('message', async function (event) {
       try {
         const response = await rp(this.option)
         for (const i of response.tracks.data) {
-          this.ary.push(
-            {
-              thumbnailImageUrl: i.album.images[0].url,
-              title: i.name,
-              text: i.album.artist.name,
-              actions: [{
-                type: 'postback',
-                label: '立即試聽',
-                data: i.name + ',' + i.album.artist.name
-              }, {
-                type: 'uri',
-                label: '看看歌詞',
-                uri: i.url
-              }]
-            }
-          )
+          const art = this.ary.map(num => {
+            return num.text
+          })
+          if (!art.includes(i.album.artist.name) && art.length < 11) {
+            this.ary.push(
+              {
+                thumbnailImageUrl: i.album.images[0].url,
+                title: i.name,
+                text: i.album.artist.name,
+                actions: [{
+                  type: 'postback',
+                  label: '立即試聽',
+                  data: i.name + ',' + i.album.artist.name
+                }, {
+                  type: 'uri',
+                  label: '看看歌詞',
+                  uri: i.url
+                }]
+              }
+            )
+          }
         }
       } catch (error) {
         console.log(error.message)
