@@ -119,15 +119,30 @@ bot.on('message', async function (event) {
   }
   // -------------------------------------------------------------------------------------------
   class Search {
-    constructor () {
+    constructor (searchtype) {
       this.ary = []
+      this.artistid = ''
+      this.artisttracksary = []
       this.option = {
         uri: 'https://api.kkbox.com/v1.1/search',
+        qs: {
+          q: event.message.text.substr(1),
+          territory: 'TW',
+          limit: 10,
+          type: searchtype
+        },
+        auth: {
+          bearer: token
+        },
+        json: true
+      }
+      this.artoption = {
+        uri: 'https://api.kkbox.com/v1.1/artists/' + this.artistid + '/top-tracks',
         qs: {
           q: event.message.text,
           territory: 'TW',
           limit: 10,
-          type: 'track'
+          type: searchtype
         },
         auth: {
           bearer: token
@@ -136,7 +151,7 @@ bot.on('message', async function (event) {
       }
     }
 
-    async information () {
+    async trackinfo () {
       try {
         const response = await rp(this.option)
         for (const i of response.tracks.data) {
@@ -174,14 +189,55 @@ bot.on('message', async function (event) {
         }
       })
     }
+
+    async artistinfo () {
+      try {
+        const response = await rp(this.option)
+        this.artistid = response.artists.data[0].id
+        const artisttracks = await rp(this.artoption)
+        for (const i of artisttracks.data) {
+          this.artisttracksary.push(
+            {
+              thumbnailImageUrl: i.album.images[0].url,
+              title: i.name,
+              text: i.album.name,
+              actions: [{
+                type: 'postback',
+                label: '立即試聽',
+                data: i.name + ',' + i.album.artist.name
+              }, {
+                type: 'uri',
+                label: '看看歌詞',
+                uri: i.url
+              }]
+            }
+          )
+        }
+      } catch (error) {
+        console.log(error.message)
+      }
+      event.reply({
+        type: 'template',
+        altText: 'this is a carousel template',
+        template: {
+          type: 'carousel',
+          columns: this.artisttracksary
+        }
+      })
+    }
   }
   // -------------------------------------------------------------------------------------------
-  if (event.message.text === 'rank') {
+  if (event.message.text.toLowerCase() === 'rank') {
     const top = new Leaderboard()
     top.info()
+  } else if (event.message.text.includes('!')) {
+    const seartrack = new Search('track')
+    seartrack.trackinfo()
+  } else if (event.message.text.includes('@')) {
+    const searchartist = new Search('artist')
+    searchartist.artistinfo()
   } else {
-    const seartrack = new Search()
-    seartrack.information()
+    event.reply('錯誤')
   }
 })
 
