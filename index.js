@@ -59,12 +59,6 @@ const opts = {
   key: process.env.API_Key
 }
 
-bot.on('follow', function (event) {
-  event.reply(
-    { type: 'text', text: '請輸入 rank 來查看榜單或是直接輸入歌曲名稱來查詢' }
-  )
-})
-
 bot.on('message', async function (event) {
   // -------------------------------------------------------------------------------------------
   class Leaderboard {
@@ -237,7 +231,8 @@ bot.on('message', async function (event) {
     searchartist.artistinfo()
     // console.log(searchartist)
   } else {
-    event.reply('錯誤')
+    // event.reply('請輸入以下指令\n 我很好 ★')
+    event.reply('請輸入以下指令\n ★ rank：搜尋各大榜單\n ★ !+歌曲名稱：搜尋歌曲\n ★ @+歌手：搜尋歌手TOP歌曲')
   }
 })
 
