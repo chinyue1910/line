@@ -139,10 +139,9 @@ bot.on('message', async function (event) {
       this.artoption = {
         uri: 'https://api.kkbox.com/v1.1/artists/' + this.artistid + '/top-tracks',
         qs: {
-          q: event.message.text,
+          q: event.message.text.substr(1),
           territory: 'TW',
-          limit: 10,
-          type: searchtype
+          limit: 10
         },
         auth: {
           bearer: token
@@ -193,7 +192,7 @@ bot.on('message', async function (event) {
     async artistinfo () {
       try {
         const response = await rp(this.option)
-        this.artistid = response.artists.data[0].id
+        this.artoption.uri = 'https://api.kkbox.com/v1.1/artists/' + response.artists.data[0].id + '/top-tracks'
         const artisttracks = await rp(this.artoption)
         for (const i of artisttracks.data) {
           this.artisttracksary.push(
@@ -236,6 +235,7 @@ bot.on('message', async function (event) {
   } else if (event.message.text.includes('@')) {
     const searchartist = new Search('artist')
     searchartist.artistinfo()
+    // console.log(searchartist)
   } else {
     event.reply('錯誤')
   }
