@@ -232,7 +232,7 @@ bot.on('message', async function (event) {
     // console.log(searchartist)
   } else {
     // event.reply('請輸入以下指令\n 我很好 ★')
-    event.reply('請輸入以下指令\n ★ rank：搜尋各大榜單\n ★ !+歌曲名稱：搜尋歌曲\n ★ @+歌手：搜尋歌手TOP歌曲')
+    event.reply('請輸入以下指令\n ★ rank：搜尋各大榜單\n ★ !歌曲名稱：搜尋歌曲\n ★ @歌手：搜尋歌手TOP歌曲')
   }
 })
 
