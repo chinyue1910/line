@@ -171,7 +171,7 @@ bot.on('message', async function (event) {
           }
         }
       } catch (error) {
-        console.log(error.message)
+        event.reply('輸入錯誤')
       }
       event.reply({
         type: 'template',
