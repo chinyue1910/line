@@ -45,14 +45,7 @@ getToken()
 // 時間差問題，console.log(token) 要等一下
 
 // 每天凌晨執行獲取 KKBOX 的 access token
-schedule.scheduleJob('* * 0 * * *', async () => {
-  try {
-    const response = await rp(optionToken)
-    token = response.access_token
-  } catch (error) {
-    console.log(error.message)
-  }
-})
+schedule.scheduleJob('0 0 0 * * *',getToken())
 
 const opts = {
   maxResults: 1,
