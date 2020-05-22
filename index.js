@@ -45,7 +45,7 @@ getToken()
 // 時間差問題，console.log(token) 要等一下
 
 // 每天凌晨執行獲取 KKBOX 的 access token
-schedule.scheduleJob('0 0 0 * * *',getToken())
+schedule.scheduleJob('0 0 0 * * *', getToken())
 
 const opts = {
   maxResults: 1,
@@ -148,8 +148,8 @@ bot.on('message', async function (event) {
             this.ary.push(
               {
                 thumbnailImageUrl: i.album.images[0].url,
-                title: i.name,
-                text: i.album.artist.name,
+                title: i.name.substr(0, 40),
+                text: i.album.artist.name.substr(0, 60),
                 actions: [{
                   type: 'postback',
                   label: '立即試聽',
@@ -164,16 +164,20 @@ bot.on('message', async function (event) {
           }
         }
       } catch (error) {
-        event.reply('輸入錯誤')
+        console.log(error.message)
       }
-      event.reply({
-        type: 'template',
-        altText: 'this is a carousel template',
-        template: {
-          type: 'carousel',
-          columns: this.ary
-        }
-      })
+      if (this.ary.length === 0) {
+        event.reply('找不到此歌曲')
+      } else {
+        event.reply({
+          type: 'template',
+          altText: 'this is a carousel template',
+          template: {
+            type: 'carousel',
+            columns: this.ary
+          }
+        })
+      }
     }
 
     async artistinfo () {
@@ -185,8 +189,8 @@ bot.on('message', async function (event) {
           this.artisttracksary.push(
             {
               thumbnailImageUrl: i.album.images[0].url,
-              title: i.name,
-              text: i.album.name,
+              title: i.name.substr(0, 30),
+              text: i.album.name.substr(0, 60),
               actions: [{
                 type: 'postback',
                 label: '立即試聽',
@@ -202,14 +206,18 @@ bot.on('message', async function (event) {
       } catch (error) {
         console.log(error.message)
       }
-      event.reply({
-        type: 'template',
-        altText: 'this is a carousel template',
-        template: {
-          type: 'carousel',
-          columns: this.artisttracksary
-        }
-      })
+      if (this.artisttracksary.length === 0) {
+        event.reply('找不到此歌手')
+      } else {
+        event.reply({
+          type: 'template',
+          altText: 'this is a carousel template',
+          template: {
+            type: 'carousel',
+            columns: this.artisttracksary
+          }
+        })
+      }
     }
   }
   // -------------------------------------------------------------------------------------------
