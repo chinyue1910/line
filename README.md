@@ -1,5 +1,10 @@
 # 稚嫩的身體
 kkbox 歌曲查詢機器人附帶 youtube 連結
+# 資料來源
+### KKBOX Open Api
+https://docs-zhtw.kkbox.codes/docs/overview
+### Youtube Api
+https://developers.google.com/youtube/v3
 # 使用方法
 * line 好友搜尋 @052emheh
 
