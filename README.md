@@ -12,6 +12,4 @@ https://developers.google.com/youtube/v3
 
 ![](https://i.imgur.com/q1uAX75.png)
 
-* 輸入 rank 可以查詢各大榜單
-* 輸入 !歌曲名稱 可以直接搜尋該歌曲
-* 輸入 @歌手名稱 可以搜尋該歌手的TOP歌曲
+* 輸入任何文字來開始使用
